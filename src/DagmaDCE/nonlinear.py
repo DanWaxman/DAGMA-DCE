@@ -1,4 +1,6 @@
+# identical to (an older version of) the DAGMA repository by Kevin Bello
 # https://github.com/kevinsbello/dagma/blob/main/src/dagma/nonlinear.py
+# For documentation, see the modified file `nonlinear_dce.py`
 
 from .locally_connected import LocallyConnected
 import torch

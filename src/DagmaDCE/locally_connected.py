@@ -6,38 +6,49 @@ import math
 
 
 class LocallyConnected(nn.Module):
-    """Local linear layer, i.e. Conv1dLocal() with filter size 1.
-
-    Args:
-        num_linear: num of local linear layers, i.e.
-        in_features: m1
-        out_features: m2
-        bias: whether to include bias or not
-
-    Shape:
-        - Input: [n, d, m1]
-        - Output: [n, d, m2]
-
-    Attributes:
-        weight: [d, m1, m2]
-        bias: [d, m2]
+    """
+    Implements a local linear layer, i.e. Conv1dLocal() with filter size 1.
     """
 
-    def __init__(self, num_linear, input_features, output_features, bias=True):
+    def __init__(
+        self,
+        num_linear: int,
+        input_features: int,
+        output_features: int,
+        bias: bool = True,
+    ):
+        r"""
+        Parameters
+        ----------
+        num_linear : int
+            num of local linear layers, i.e.
+        input_features : int
+            m1
+        output_features : int
+            m2
+        bias : bool, optional
+            Whether to include bias or not. Default: ``True``.
+
+
+        Attributes
+        ----------
+        weight : [d, m1, m2]
+        bias : [d, m2]
+        """
         super(LocallyConnected, self).__init__()
         self.num_linear = num_linear
         self.input_features = input_features
         self.output_features = output_features
 
-        self.weight = nn.Parameter(torch.Tensor(num_linear,
-                                                input_features,
-                                                output_features))
+        self.weight = nn.Parameter(
+            torch.Tensor(num_linear, input_features, output_features)
+        )
         if bias:
             self.bias = nn.Parameter(torch.Tensor(num_linear, output_features))
         else:
             # You should always register all possible parameters, but the
             # optional ones can be None if you want.
-            self.register_parameter('bias', None)
+            self.register_parameter("bias", None)
 
         self.reset_parameters()
 
@@ -49,7 +60,20 @@ class LocallyConnected(nn.Module):
         if self.bias is not None:
             nn.init.uniform_(self.bias, -bound, bound)
 
-    def forward(self, input: torch.Tensor):
+    def forward(self, input: torch.Tensor) -> torch.Tensor:
+        r"""
+        Implements the forward pass of the layer.
+
+        Parameters
+        ----------
+        input : torch.Tensor
+            Shape :math:`(n, d, m1)`
+
+        Returns
+        -------
+        torch.Tensor
+            Shape :math:`(n, d, m2)`
+        """
         # [n, d, 1, m2] = [n, d, 1, m1] @ [1, d, m1, m2]
         out = torch.matmul(input.unsqueeze(dim=2), self.weight.unsqueeze(dim=0))
         out = out.squeeze(dim=2)
@@ -58,10 +82,13 @@ class LocallyConnected(nn.Module):
             out += self.bias
         return out
 
-    def extra_repr(self):
-        # (Optional)Set the extra information about this module. You can test
-        # it by printing an object of this class.
-        return 'num_linear={}, in_features={}, out_features={}, bias={}'.format(
-            self.num_linear, self.in_features, self.out_features,
-            self.bias is not None
+    def extra_repr(self) -> str:
+        """
+        Returns a string with extra information from the layer.
+        """
+        return "num_linear={}, in_features={}, out_features={}, bias={}".format(
+            self.num_linear,
+            self.input_features,
+            self.output_features,
+            self.bias is not None,
         )
