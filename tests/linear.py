@@ -11,7 +11,7 @@ import seaborn as sns
 sns.set_context("paper")
 
 
-device = torch.device("cuda:1")
+device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 torch.set_default_device(device)
 
 torch.set_default_dtype(torch.double)
@@ -19,9 +19,13 @@ utils.set_random_seed(0)
 torch.manual_seed(0)
 
 reestimate_graph = False
+RESULTS_DIR = ''
 
+#############################
+####### Generate Data #######
+#############################
 print('>>> Generating Data <<<')
-n, d, s0, graph_type, sem_type = 1000, 10, 20, 'ER', 'gauss'  # 'mlp'
+n, d, s0, graph_type, sem_type = 1000, 10, 20, 'ER', 'gauss'
 B_true = utils.simulate_dag(d, s0, graph_type)
 W_true = utils.simulate_parameter(B_true)
 X = utils.simulate_linear_sem(W_true, n, sem_type)
@@ -46,6 +50,9 @@ print('[R^2 Sort Regress Results] SHD:',
 
 X = torch.from_numpy(X).to(device)
 
+######################################
+####### Do DAGMA-DCE Discovery #######
+######################################
 print('\n>>> Performing DAGMA-DCE discovery <<<')
 eq_model = nonlinear_dce.DagmaMLP_DCE(dims=[d, 10, 1], bias=True).to(device)
 model = nonlinear_dce.DagmaDCE(eq_model)
@@ -70,6 +77,9 @@ print('[DAGMA-DCE Results] Froebenius Difference from W_true:', diff_dce)
 print('[DAGMA-DCE Results] Mean squared error:', mse_dce)
 print('[DAGMA-DCE Results] Kendall-Tau:', kendalltau(B_true, W_est_dce))
 
+##################################
+####### Do DAGMA Discovery #######
+##################################
 # for lambda1 in [0, 1e-4, 1e-3, 1e-2, 1e-1]:
 for lambda1 in [1e-3]:
     print(f'\n>>> Performing DAGMA discovery (lambda1 = {lambda1})<<<')
@@ -96,6 +106,8 @@ for lambda1 in [1e-3]:
     print('[DAGMA Results] Mean squared error:', mse_dagma)
     print('[DAGMA Results] Kendall-Tau:', kendalltau(B_true, W_est_dagma))
 
+    # We can compare with DAGMA results by reestimating the graph under the DAGMA-DCE
+    # definition post-hoc. But this gives no guarantees about the constraint
     if reestimate_graph:
         W_est_dagma_no_thresh = eq_model.get_graph(X)[0].detach().cpu().numpy()
         W_est_dagma = W_est_dagma * (W_est_dagma_no_thresh > 0.3)
@@ -111,6 +123,9 @@ for lambda1 in [1e-3]:
         print('[DAGMA Results] Mean squared error:', mse_dagma)
 
 
+############################
+####### Plot Results #######
+############################
 print('\n>>> Plotting Results <<<')
 
 
@@ -136,7 +151,7 @@ for i in range(d):
                  alpha=abs(W_true[j, i]) / np.max(abs(W_true)), color='black', linewidth=2)
 
 plt.tight_layout()
-plt.savefig('linear_diff_dce.pdf')
+plt.savefig(RESULTS_DIR + 'linear_diff_dce.pdf')
 
 offset = 0.48
 plt.figure(figsize=(3.5, 3.25))
@@ -160,7 +175,7 @@ plt.xticks([])
 plt.yticks([])
 plt.colorbar()
 plt.tight_layout()
-plt.savefig('linear_diff_dagma.pdf')
+plt.savefig(RESULTS_DIR + 'linear_diff_dagma.pdf')
 
 plt.figure(figsize=(3.5, 3.25))
 plt.matshow(abs(W_true), cmap='Greys', vmin=0, vmax=2, fignum=0)
@@ -169,4 +184,4 @@ plt.title(r'True Graph $W_\mathrm{true}$')
 plt.xticks([])
 plt.yticks([])
 plt.colorbar()
-plt.savefig('linear_true_graph.pdf')
+plt.savefig(RESULTS_DIR + 'linear_true_graph.pdf')
