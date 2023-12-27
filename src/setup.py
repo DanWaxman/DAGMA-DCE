@@ -5,8 +5,8 @@ setup(
     version="0.1",
     url="https://github.com/danwaxman/dagma-dce.git",
     author="Dan Waxman",
-    author_email="daniel.waxman1@stonybrook.com",
-    description='An implementation of our paper "DAGMA-DCE: Interpretable, Non-Parametric Differentiable Causal Discovery"',
+    author_email="daniel.waxman@stonybrook.com",
+    description='An implementation of our paper "DAGMA-DCE: Interpretable, Non-Parametric Differentiable Causal Discovery".',
     packages=find_packages(),
     install_requires=[
         "numpy",
