@@ -1,12 +1,13 @@
 [![Open in Code Ocean](https://codeocean.com/codeocean-assets/badge/open-in-code-ocean.svg)](https://codeocean.com/capsule/0703344/tree)
+[![arXiv](https://img.shields.io/badge/arXiv-2401.02930-b31b1b.svg)](https://arxiv.org/abs/2401.02930)
 
 # DAGMA-DCE
-Using differential causal effect for interpretable differentiable causal learning.
+Using differential causal effect for interpretable differentiable causal discovery.
 
 This repository implements the learning method proposed in "DAGMA-DCE: Interpretable, Non-Parametric Differentiable Causal Discovery". Based on the learning method proposed in [DAGMA](https://github.com/kevinsbello/dagma), we learn causal graphs in a differentiable manner, with the weighted adjacency matrices having directly interpretable meaning. 
 
 # Citation
-If you use any code or results from this project, please consider citing the orignal paper:
+The DAGMA-DCE paper is available open-access on [IEEEXplore](https://doi.org/10.1109/OJSP.2024.3351593) and [the arXiv](https://arxiv.org/abs/2401.02930). If you use any code or results from this project, please consider citing the orignal paper:
 
 ```
 @article{waxman2024dagma,
@@ -17,9 +18,8 @@ If you use any code or results from this project, please consider citing the ori
   year={2024},
   volume={},
   number={},
-  pages={},
-  doi={},
-  note={Accepted.}}
+  pages={1--9},
+  doi={10.1109/OJSP.2024.3351593},
 ```
 
 # Installation Instructions 
