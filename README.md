@@ -1,5 +1,7 @@
 [![Open in Code Ocean](https://codeocean.com/codeocean-assets/badge/open-in-code-ocean.svg)](https://codeocean.com/capsule/0703344/tree)
 [![arXiv](https://img.shields.io/badge/arXiv-2401.02930-b31b1b.svg)](https://arxiv.org/abs/2401.02930)
+[![Static Badge](https://img.shields.io/badge/OJSP-2024.3351593-blue?style=flat)](https://doi.org/10.1109/OJSP.2024.3351593) 
+
 
 # DAGMA-DCE
 Using differential causal effect for interpretable differentiable causal discovery.
