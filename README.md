@@ -20,6 +20,7 @@ The DAGMA-DCE paper is available open-access on [IEEEXplore](https://doi.org/10.
   number={},
   pages={1--9},
   doi={10.1109/OJSP.2024.3351593},
+}
 ```
 
 # Installation Instructions 
